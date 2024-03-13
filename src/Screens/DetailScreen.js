@@ -1,47 +1,75 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, Dimensions, StatusBar, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, Image, StyleSheet, Dimensions, StatusBar, ScrollView, TouchableOpacity, Linking, Pressable } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
+import {useNavigation } from "@react-navigation/native";
 
-export default function DetailScreen() {
+export default function DetailScreen({ route }) {
+  const { newsItem, category } = route.params;
+  const navigation = useNavigation();
+
+  const formatContent = (content) => {
+    return content.replace(/\[.*\]/, ''); 
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return `${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+  };
+
+  const handleReadMore = () => {
+    Linking.openURL(newsItem.url);
+  };
+  const handleBackButton = () => {
+    navigation.navigate('Home');
+  };
+
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.container}>
         <View style={styles.imageContainer}>
           <Image
-            source={{ uri: "https://tse3.mm.bing.net/th?id=OIP.aJVjKHTvalzTDznRcxCZ9gHaEK&pid=Api&P=0&h=180" }}
+            source={{ uri: newsItem.urlToImage }}
             style={styles.image}
             resizeMode="cover"
           />
-          <TouchableOpacity style={styles.backButton}>
-            <Ionicons name="chevron-back-circle-outline" style={styles.backIcon} size={32} color="white" />
-          </TouchableOpacity>
+          <Pressable onPress={handleBackButton} style={styles.backButton}>
+            <Ionicons name="chevron-back-circle-outline" style={styles.backIcon} size={36} color="black" />
+          </Pressable>
           <View style={styles.overlay}>
             <View style={styles.categoryChip}>
-              <Text style={styles.categoryText}>Political</Text>
+              <Text style={styles.categoryText}>{category}</Text>
             </View>
           </View>
           <View style={styles.titleContainer}>
-            <Text style={styles.title}>
-              Opinion | 'Beyond Votes - A Slice of Hope Amidst Gloom': Rajmohan Gandhi Writes
-            </Text>
+            <Text style={styles.title}>{newsItem.title}</Text>
           </View>
         </View>
         <View style={styles.newsContent}>
           <View style={styles.heading}>
-            <View style={styles.headingText}>
-              <Text style={styles.sourceName}>XDA Developers</Text>
-              <Text style={styles.date}>21 Feb</Text>
+            <View style={styles.metaInfo}>
+              <Text style={styles.sourceName}>{newsItem.source.name}</Text>
+              <Text style={styles.divider}>|</Text>
+              <Text style={styles.authorName}>{newsItem.author}</Text>
+              <Text style={styles.divider}>|</Text>
+              <Text style={styles.date}>{formatDate(newsItem.publishedAt)}</Text>
             </View>
-            <Text style={styles.authorName}>- By Mahmoud Itani</Text>
           </View>
-          <Text style={styles.article}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eget felis sit amet est viverra malesuada. Nulla facilisi. Proin ut libero at velit efficitur feugiat. Sed sodales risus et nunc sollicitudin vehicula. Integer at mi eu augue condimentum suscipit eu ac ante. Fusce ullamcorper enim et ex blandit, vel gravida velit dapibus. Nulla venenatis mi eu sapien rutrum convallis. Quisque ultricies quam sit amet lacus posuere, ac tincidunt mauris malesuada. Vivamus eu felis accumsan, sollicitudin enim non, finibus orci. Vivamus sed tellus sed libero dignissim scelerisque. Maecenas eu faucibus nisi. Nam a metus id velit tincidunt fermentum a eget nulla. Nulla facilisi. Donec vitae risus a arcu tincidunt vestibulum id sit amet sem. Integer tempus mattis lorem nec tincidunt.
-          </Text>
+          <Text style={styles.article}>{formatContent(newsItem.content)}</Text>
+          <TouchableOpacity onPress={handleReadMore} style={styles.readMoreButton}>
+            <Text style={styles.readMore}>Read More</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </ScrollView>
   );
 }
+
+const monthNames = [
+  "January", "February", "March",
+  "April", "May", "June", "July",
+  "August", "September", "October",
+  "November", "December"
+];
 
 const windowWidth = Dimensions.get('window').width;
 const statusBarHeight = StatusBar.currentHeight || 0;
@@ -57,9 +85,18 @@ const styles = StyleSheet.create({
   imageContainer: {
     position: 'relative',
   },
+  readMoreButton: {
+    alignSelf: 'flex-end',
+    marginTop: 20, 
+    marginRight: 20,
+  },
+  readMore: {
+    color: 'blue',
+    textDecorationLine: 'underline',
+  },
   image: {
     width: windowWidth,
-    height: 300,
+    height: 400,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
   },
@@ -74,14 +111,44 @@ const styles = StyleSheet.create({
   },
   overlay: {
     position: 'absolute',
-    bottom: 120,
-    left: 20,
+    // bottom: 180,
+    top:20,
+    right:20
+    // left: 20,
+  },
+  metaInfo: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start', 
+    alignItems: 'center',
+    marginTop: 10, 
+  },
+  sourceName: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: '#666',
+    marginRight: 5, 
+  },
+  authorName: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: '#666',
+    marginRight: 5, 
+  },
+  date: {
+    fontSize: 14,
+    color: '#666',
+  },
+  divider: {
+    fontSize: 14,
+    color: '#666',
+    marginHorizontal: 5,
   },
   categoryChip: {
     backgroundColor: "purple",
     borderRadius: 15,
     paddingHorizontal: 10,
     paddingVertical: 5,
+    marginTop: 10, 
   },
   categoryText: {
     color: "#ffffff",
@@ -89,18 +156,19 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 60,
     left: 20,
   },
   title: {
     fontSize: 20,
-    fontWeight: "900",
+    fontWeight: "500",
     color: 'white',
     maxWidth: windowWidth - 40,
   },
   newsContent: {
     paddingHorizontal: 20,
     paddingTop: 20,
+    paddingBottom: 60, 
     backgroundColor: '#f5f5f5',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -119,24 +187,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  sourceName: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginRight: 5,
-  },
-  date: {
-    fontSize: 14,
-    color: '#666',
-  },
-  authorName: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
   article: {
-    fontSize: 16,
-    lineHeight: 24,
+    fontSize: 20,
+    lineHeight: 28,
     color: "#333333",
     marginTop: 20,
     paddingHorizontal: 20,
   },
 });
+
