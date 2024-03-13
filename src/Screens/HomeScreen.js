@@ -12,7 +12,7 @@ import React, { useState, useEffect } from "react";
 import ad from "../../assets/ad.png";
 import { Chip, Card, Title, Paragraph } from "react-native-paper";
 import logo from "../../assets/logo.png";
-import {useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 const categories = [
   "general",
   "technology",
@@ -40,20 +40,24 @@ export default function HomeScreen() {
     </Chip>
   );
   const handleNewsCardPress = (item) => {
-    navigation.navigate('DetailScreen', { newsItem: item , category: selectedCategory });
+    navigation.navigate("DetailScreen", {
+      newsItem: item,
+      category: selectedCategory,
+    });
   };
 
-  const renderNewsCard = ({ item }) => (
-    <Pressable onPress={() => handleNewsCardPress(item)} >
-      <View style={styles.newsCard}>
-        <Image source={{ uri: item.urlToImage }} style={styles.cardImage} />
-        <View style={styles.cardContent}>
-          {/* <Text>{item.title}</Text> */}
-          <Text style={styles.cardTxt}>{item.title}</Text>
+  const renderNewsCard = ({ item }) =>
+    item.content && (
+      <Pressable onPress={() => handleNewsCardPress(item)}>
+        <View style={styles.newsCard}>
+          <Image source={{ uri: item.urlToImage }} style={styles.cardImage} />
+          <View style={styles.cardContent}>
+            {/* <Text>{item.title}</Text> */}
+            <Text style={styles.cardTxt}>{item.title}</Text>
+          </View>
         </View>
-      </View>
-    </Pressable>
-  );
+      </Pressable>
+    );
 
   const [data, setData] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -115,7 +119,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: StatusBar.currentHeight,
     paddingHorizontal: 20,
-    backgroundColor:'black'
+    backgroundColor: "black",
   },
   logo: {
     width: "45%",
