@@ -11,6 +11,7 @@ import {
 import React, { useState, useEffect } from "react";
 import ad from "../../assets/ad.png";
 import { Chip, Card, Title, Paragraph } from "react-native-paper";
+import logo from "../../assets/logo.png";
 
 const categories = [
   "general",
@@ -45,7 +46,7 @@ export default function HomeScreen() {
         <Image source={{ uri: item.urlToImage }} style={styles.cardImage} />
         <View style={styles.cardContent}>
           {/* <Text>{item.title}</Text> */}
-          <Text>{item.title}</Text>
+          <Text style={styles.cardTxt}>{item.title}</Text>
         </View>
       </View>
     </Pressable>
@@ -77,7 +78,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.HomeScreen}>
-      <Text style={styles.text}>News Adda</Text>
+      <Image style={styles.logo} source={logo} />
       <Image style={styles.img} source={ad} />
 
       {/* chips  */}
@@ -112,11 +113,10 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight,
     paddingHorizontal: 20,
   },
-  text: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#388D00",
+  logo: {
+    width: "45%",
     marginTop: 20,
+    height: 25,
   },
   img: {
     width: "100%",
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderColor: "black",
     padding: 7,
-    backgroundColor: "#fff",
+    backgroundColor: "#1E1E1E",
     borderRadius: 10,
     elevation: 4,
     height: "25vh",
@@ -159,5 +159,8 @@ const styles = StyleSheet.create({
   },
   loader: {
     top: "1%",
+  },
+  cardTxt: {
+    color: "white",
   },
 });
