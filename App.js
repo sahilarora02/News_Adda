@@ -2,7 +2,7 @@ import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
 import HomeScreen from "./src/Screens/HomeScreen";
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import DetailScreen from "./src/Screens/DetailScreen";
 
@@ -13,7 +13,7 @@ export default function App() {
     <View style={styles.container}>
       <StatusBar style="light" />
       <NavigationContainer>
-        <Stack.Navigator >
+        <Stack.Navigator>
           <Stack.Screen
             options={{
               headerShown: false,
